@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Shield, ShieldAlert, ShieldCheck, RefreshCw, AlertTriangle, Info, CreditCard, User, Landmark, HelpCircle } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://backend-bank-fraud.vercel.app';
 
 const App = () => {
   const [formData, setFormData] = useState({
