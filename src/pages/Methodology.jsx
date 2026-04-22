@@ -46,7 +46,7 @@ const Methodology = () => {
 
   return (
     <div className="animate-fade-in max-w-4xl">
-      <SectionCard title="Siklus Proyek (CRISP-DM)" subtitle="Metodologi standar industri yang digunakan oleh Group 2." icon={Layers}>
+      <SectionCard title="Siklus Proyek (CRISP-DM)" subtitle="Cross-Industry Standard Process for Data Mining" icon={Layers}>
         <div className="space-y-16 py-10 pl-4">
           {steps.map((step, i) => (
             <div key={i} className="flex gap-10 group relative">
