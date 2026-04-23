@@ -19,8 +19,8 @@ const Overview = ({ onStartAnalysis }) => {
             <h1 className="text-3xl sm:text-4xl lg:text-6xl font-black leading-tight tracking-tighter uppercase text-white">
               <span className="bg-gradient-to-r from-brand-primary via-brand-accent to-brand-secondary bg-clip-text text-transparent">FGD Kelompok 2</span>
             </h1>
-            <p className="text-base lg:text-xl text-slate-400 font-bold tracking-tight leading-relaxed max-w-xl">
-              Comparative Analysis: <span className="bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">CatBoost</span> vs <span className="bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">FT-Transformer</span> vs <span className="bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">TabPFN</span> for Bank Fraud Detection
+            <p className="text-base lg:text-xl text-slate-400 font-bold tracking-tight leading-relaxed max-wxl">
+              Comparative Analysis: <span className="bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">CatBoost</span> vs <span className="bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">TabPFN</span> for Bank Fraud Detection
             </p>
           </div>
 
@@ -81,7 +81,7 @@ const Overview = ({ onStartAnalysis }) => {
               Ensemble Model Comparison
             </h4>
             <p className="text-slate-400 text-base leading-relaxed">
-              Penelitian ini mengadu kekuatan optimasi <span className="text-white font-semibold">CatBoost + Optuna</span>, struktur <span className="text-white font-semibold">FT-Transformer</span>, dan kemampuan zero-shot learning dari <span className="text-white font-semibold">TabPFN</span> untuk menemukan performa terbaik dalam deteksi fraud perbankan.
+              Penelitian ini mengadu kekuatan optimasi <span className="text-white font-semibold">CatBoost + Optuna</span> dan kemampuan zero-shot learning dari <span className="text-white font-semibold">TabPFN</span> untuk menemukan performa terbaik dalam deteksi fraud perbankan.
             </p>
           </div>
         </div>

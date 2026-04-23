@@ -63,7 +63,6 @@ const App = () => {
     performance: [
       { name: 'TabPFN', auc: 0.9949, recall: 0.9000, pr: 0.8084 },
       { name: 'CatBoost', auc: 0.9936, recall: 0.9574, pr: 0.7440 },
-      { name: 'FT-Transformer', auc: 0.9926, recall: 0.8754, pr: 0.7198 },
     ]
   }), []);
 

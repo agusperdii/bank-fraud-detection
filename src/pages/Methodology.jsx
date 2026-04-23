@@ -29,7 +29,7 @@ const Methodology = () => {
     },
     { 
       t: 'Modeling', 
-      d: 'Menerapkan arsitektur ensemble (CatBoost, TabPFN, FT-Transformer) untuk membangun mesin prediksi yang tangguh dan akurat.', 
+      d: 'Menerapkan arsitektur ensemble (CatBoost, TabPFN) untuk membangun mesin prediksi yang tangguh dan akurat.', 
       i: Cpu 
     },
     { 

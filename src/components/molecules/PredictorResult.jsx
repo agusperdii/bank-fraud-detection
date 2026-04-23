@@ -11,10 +11,12 @@ const PredictorResult = ({ modelName, isFraud, probability, isDemo }) => {
   
   return (
     <div className={`p-6 rounded-2xl border ${isFraud ? 'border-brand-danger/30' : 'border-brand-success/30'} ${bgColor} transition-all relative overflow-hidden`}>
-      {/* Indicator Overlay */}
-      <div className={`absolute top-0 right-0 px-3 py-1 text-[8px] font-black uppercase tracking-widest ${isDemo ? 'bg-brand-warning/20 text-brand-warning' : 'bg-brand-success/20 text-brand-success'}`}>
-        {isDemo ? 'Heuristic Backup' : 'Live Inference'}
-      </div>
+      {/* Indicator Overlay - Only show when using heuristics/demo */}
+      {isDemo && (
+        <div className="absolute top-0 right-0 px-3 py-1 text-[8px] font-black uppercase tracking-widest bg-brand-warning/20 text-brand-warning">
+          Heuristic Backup
+        </div>
+      )}
 
       <div className="flex justify-between items-start mb-6 pt-2">
         <div className="space-y-1">
