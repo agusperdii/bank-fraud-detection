@@ -23,63 +23,23 @@ const App = () => {
     type_CASH_IN: 0, type_CASH_OUT: 0, type_DEBIT: 0, type_PAYMENT: 0, type_TRANSFER: 1,
   });
 
-  const handlePredict = async () => {
+    const handlePredict = async () => {
     setLoading(true);
-    setResults([]); // Clear previous results
+    setResults([]); 
     setError(null);
 
-    // Call CatBoost (Fast)
-    const catboostPromise = axios.post(`${API_BASE_URL}/predict/catboost`, formData)
-      .then(res => {
-        setResults(prev => [...prev.filter(r => r.model_name !== 'CatBoost (Optuna)'), res.data]);
-        return res.data;
-      })
-      .catch(err => {
-        console.error('CatBoost Error:', err);
-        return null;
-      });
-
-    // Call TabPFN (Slow) with retry
-    const tabpfnPromise = axios.post(`${TABPFN_API_URL}/predict`, formData)
-      .then(res => {
-        const resData = Array.isArray(res.data) ? res.data[0] : res.data;
-        const data = {
-          model_name: "TabPFN (Cloud)",
-          is_fraud: !!resData.is_fraud,
-          probability: parseFloat(resData.probability) || 0,
-          is_demo: false
-        };
-        setResults(prev => [...prev.filter(r => r.model_name !== 'TabPFN (Cloud)'), data]);
-        return data;
-      })
-      .catch(async err => {
-        console.warn('TabPFN first attempt failed, retrying...', err);
-        try {
-          const retryRes = await axios.post(`${TABPFN_API_URL}/predict`, formData);
-          const resData = Array.isArray(retryRes.data) ? retryRes.data[0] : retryRes.data;
-          const data = {
-            model_name: "TabPFN (Cloud)",
-            is_fraud: !!resData.is_fraud,
-            probability: parseFloat(resData.probability) || 0,
-            is_demo: false
-          };
-          setResults(prev => [...prev.filter(r => r.model_name !== 'TabPFN (Cloud)'), data]);
-          return data;
-        } catch (retryErr) {
-          console.error('TabPFN Retry failed:', retryErr);
-          return null;
-        }
-      });
-
     try {
-      // Wait for at least one to succeed or both to finish
-      await Promise.allSettled([catboostPromise, tabpfnPromise]);
+      // Memanggil Ensemble Endpoint (CatBoost + TabPFN sekaligus)
+      const response = await axios.post(`${API_BASE_URL}/predict`, formData, { timeout: 60000 });
       
-      // If no results after both finish, set error
-      setResults(prev => {
-        if (prev.length === 0) setError('Unable to reach predictive engines. Please check connection.');
-        return prev;
-      });
+      if (Array.isArray(response.data)) {
+        setResults(response.data);
+      } else {
+        setResults([response.data]);
+      }
+    } catch (err) {
+      console.error('Ensemble Prediction Error:', err);
+      setError('Gagal menghubungi engine prediksi. Pastikan server backend aktif.');
     } finally {
       setLoading(false);
     }
