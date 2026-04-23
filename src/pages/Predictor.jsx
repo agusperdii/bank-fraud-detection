@@ -89,7 +89,7 @@ const Predictor = ({ formData, handleChange, handlePredict, loading, results, er
             </div>
           )}
 
-          {!results && !loading && !error && (
+          {(!results || results.length === 0) && !loading && !error && (
             <div className="h-[300px] lg:h-[500px] border-2 border-dashed border-brand-surfaceLight rounded-[2rem] lg:rounded-[3rem] flex flex-col items-center justify-center text-slate-500 text-center p-6 lg:p-10 opacity-60">
               <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-slate-800/50 flex items-center justify-center mb-6">
                 <Activity size={32} className="animate-pulse" />
@@ -99,8 +99,9 @@ const Predictor = ({ formData, handleChange, handlePredict, loading, results, er
             </div>
           )}
 
+          {/* Show Existing Results */}
           {results && results.map((res, i) => (
-            <div key={i} className="animate-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
+            <div key={res.model_name} className="animate-slide-up">
               <PredictorResult 
                 modelName={res.model_name} 
                 isFraud={res.is_fraud} 
@@ -109,6 +110,26 @@ const Predictor = ({ formData, handleChange, handlePredict, loading, results, er
               />
             </div>
           ))}
+
+          {/* Show Loading Placeholder if TabPFN is missing but loading is active */}
+          {loading && !results.find(r => r.model_name === 'TabPFN (Cloud)') && (
+             <div className="p-6 rounded-2xl border border-brand-surfaceLight bg-brand-surface/50 transition-all relative overflow-hidden animate-pulse">
+                <div className="flex justify-between items-start mb-6 pt-2">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] block">Analytic Engine</span>
+                    <h4 className="text-sm font-extrabold text-slate-400">TabPFN (Cloud)</h4>
+                  </div>
+                  <div className="w-20 h-8 bg-slate-800 rounded-lg" />
+                </div>
+                <div className="space-y-4">
+                  <div className="h-4 w-32 bg-slate-800 rounded" />
+                  <div className="h-2 w-full bg-slate-800 rounded-full" />
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-brand-bg/20 backdrop-blur-[1px]">
+                   <span className="text-[10px] font-black text-brand-primary uppercase tracking-[0.3em] animate-bounce">Neural Processing...</span>
+                </div>
+             </div>
+          )}
         </div>
       </div>
     </div>

@@ -8,13 +8,14 @@ import Analytics from './pages/Analytics';
 import Methodology from './pages/Methodology';
 
 const API_BASE_URL = 'https://backend-bank-fraud.vercel.app';
+const TABPFN_API_URL = 'https://be-tabpfn.vercel.app';
 
 const App = () => {
   const [currentTab, setCurrentTab] = useState('overview');
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState([]); // Initialize as empty array
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     step: 200, amount: 50000.0, balanceDiffOrig: 50000.0, balanceDiffDest: -50000.0,
@@ -24,13 +25,47 @@ const App = () => {
 
   const handlePredict = async () => {
     setLoading(true);
+    setResults([]); // Clear previous results
     setError(null);
+
+    // Call CatBoost (Fast)
+    const catboostPromise = axios.post(`${API_BASE_URL}/predict/catboost`, formData)
+      .then(res => {
+        setResults(prev => [...prev.filter(r => r.model_name !== 'CatBoost (Optuna)'), res.data]);
+        return res.data;
+      })
+      .catch(err => {
+        console.error('CatBoost Error:', err);
+        return null;
+      });
+
+    // Call TabPFN (Slow)
+    const tabpfnPromise = axios.post(`${TABPFN_API_URL}/predict`, formData)
+      .then(res => {
+        // Map the TabPFN response to match the PredictionResponse structure if needed
+        const data = {
+          model_name: "TabPFN (Cloud)",
+          is_fraud: !!res.data.is_fraud,
+          probability: parseFloat(res.data.probability),
+          is_demo: false
+        };
+        setResults(prev => [...prev.filter(r => r.model_name !== 'TabPFN (Cloud)'), data]);
+        return data;
+      })
+      .catch(err => {
+        console.error('TabPFN Error:', err);
+        return null;
+      });
+
     try {
-      const resp = await axios.post(`${API_BASE_URL}/predict`, formData);
-      setResults(resp.data);
-    } catch (err) {
-      console.error('Prediction Error:', err);
-      setError('Backend API unreachable. Please ensure the server is active.');
+      // Wait for at least one to succeed or both to finish
+      await Promise.allSettled([catboostPromise, tabpfnPromise]);
+      
+      // If no results after both finish, set error
+      setResults(prev => {
+        if (prev.length === 0) setError('Unable to reach predictive engines. Please check connection.');
+        return prev;
+      });
     } finally {
       setLoading(false);
     }
