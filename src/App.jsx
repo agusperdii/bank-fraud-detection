@@ -39,22 +39,36 @@ const App = () => {
         return null;
       });
 
-    // Call TabPFN (Slow)
+    // Call TabPFN (Slow) with retry
     const tabpfnPromise = axios.post(`${TABPFN_API_URL}/predict`, formData)
       .then(res => {
-        // Map the TabPFN response to match the PredictionResponse structure if needed
+        const resData = Array.isArray(res.data) ? res.data[0] : res.data;
         const data = {
           model_name: "TabPFN (Cloud)",
-          is_fraud: !!res.data.is_fraud,
-          probability: parseFloat(res.data.probability),
+          is_fraud: !!resData.is_fraud,
+          probability: parseFloat(resData.probability) || 0,
           is_demo: false
         };
         setResults(prev => [...prev.filter(r => r.model_name !== 'TabPFN (Cloud)'), data]);
         return data;
       })
-      .catch(err => {
-        console.error('TabPFN Error:', err);
-        return null;
+      .catch(async err => {
+        console.warn('TabPFN first attempt failed, retrying...', err);
+        try {
+          const retryRes = await axios.post(`${TABPFN_API_URL}/predict`, formData);
+          const resData = Array.isArray(retryRes.data) ? retryRes.data[0] : retryRes.data;
+          const data = {
+            model_name: "TabPFN (Cloud)",
+            is_fraud: !!resData.is_fraud,
+            probability: parseFloat(resData.probability) || 0,
+            is_demo: false
+          };
+          setResults(prev => [...prev.filter(r => r.model_name !== 'TabPFN (Cloud)'), data]);
+          return data;
+        } catch (retryErr) {
+          console.error('TabPFN Retry failed:', retryErr);
+          return null;
+        }
       });
 
     try {
