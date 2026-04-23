@@ -101,7 +101,12 @@ const Predictor = ({ formData, handleChange, handlePredict, loading, results, er
 
           {results && results.map((res, i) => (
             <div key={i} className="animate-slide-up" style={{ animationDelay: `${i * 100}ms` }}>
-              <PredictorResult modelName={res.model_name} isFraud={res.is_fraud} probability={res.probability} />
+              <PredictorResult 
+                modelName={res.model_name} 
+                isFraud={res.is_fraud} 
+                probability={res.probability} 
+                isDemo={res.is_demo}
+              />
             </div>
           ))}
         </div>

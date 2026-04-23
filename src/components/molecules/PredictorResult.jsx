@@ -2,7 +2,7 @@ import React from 'react';
 import Badge from '../atoms/Badge';
 import ProgressBar from '../atoms/ProgressBar';
 
-const PredictorResult = ({ modelName, isFraud, probability }) => {
+const PredictorResult = ({ modelName, isFraud, probability, isDemo }) => {
   const variant = isFraud ? 'danger' : 'success';
   const label = isFraud ? 'HIGH RISK' : 'CLEAN';
   const colorClass = isFraud ? 'bg-brand-danger' : 'bg-brand-success';
@@ -10,8 +10,13 @@ const PredictorResult = ({ modelName, isFraud, probability }) => {
   const bgColor = isFraud ? 'bg-brand-danger/5' : 'bg-brand-success/5';
   
   return (
-    <div className={`p-6 rounded-2xl border ${isFraud ? 'border-brand-danger/30' : 'border-brand-success/30'} ${bgColor} transition-all`}>
-      <div className="flex justify-between items-start mb-6">
+    <div className={`p-6 rounded-2xl border ${isFraud ? 'border-brand-danger/30' : 'border-brand-success/30'} ${bgColor} transition-all relative overflow-hidden`}>
+      {/* Indicator Overlay */}
+      <div className={`absolute top-0 right-0 px-3 py-1 text-[8px] font-black uppercase tracking-widest ${isDemo ? 'bg-brand-warning/20 text-brand-warning' : 'bg-brand-success/20 text-brand-success'}`}>
+        {isDemo ? 'Heuristic Backup' : 'Live Inference'}
+      </div>
+
+      <div className="flex justify-between items-start mb-6 pt-2">
         <div className="space-y-1">
           <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] block">
             Analytic Engine
